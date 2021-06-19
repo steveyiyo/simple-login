@@ -17,9 +17,9 @@ A System that can upload file and download it.
 This may require your admin password.
 Type it and you can't see it.  When you done, just press Return.
 
-![](readme_res/002)
+![](readme_res/002.png)
 
-4. Excute It!
+3. Excute It!
 > For Mac users, you may need to press "⌃ (control)", then press open
 
 **Note: You can edit Files in the static folder**
