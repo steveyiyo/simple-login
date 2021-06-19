@@ -1,8 +1,8 @@
-# File Folder System 檔案資料夾系統
+# Simple Login 登入系統
 
 ### [查看中文說明文件](READMD_zh.md)
 
-A System that can upload file and download it.
+A simple login system.
 
 ### How to use?
 
