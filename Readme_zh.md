@@ -23,4 +23,4 @@
 
 ![](readme_res/003zh.png)
 
-**Note: You can edit Files in the static folder**
+**備註: 您可以在 static 資料夾編輯檔案**
