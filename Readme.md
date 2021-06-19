@@ -1,6 +1,6 @@
 # Simple Login 登入系統
 
-### [查看中文說明文件](READMD_zh.md)
+### [查看中文說明文件](Readme_zh.md)
 
 A simple login system.
 
