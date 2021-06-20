@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -16,7 +17,7 @@ type Account struct {
 }
 
 func webServer(c *gin.Context) {
-	c.HTML(200, "index.tmpl", nil)
+	c.Redirect(302, "login")
 }
 
 func login_Page(c *gin.Context) {
@@ -34,10 +35,13 @@ func login_check(c *gin.Context) {
 	intput_password := c.PostForm("password")
 	if input_username == accountdata.Username {
 		if CheckPasswordHash(intput_password, accountdata.Password) {
-			c.Data(200, "text/plain; charset=utf-8;", []byte("登入成功！\n使用者："+input_username))
+			// c.Data(200, "text/plain; charset=utf-8;", []byte("登入成功！\n使用者："+input_username))
+			c.HTML(200, "index.tmpl", nil)
 		} else {
 			c.Data(400, "text/plain; charset=utf-8;", []byte("登入失敗！\n嘗試的使用者："+input_username))
 		}
+	} else {
+		c.Data(400, "text/plain; charset=utf-8;", []byte("登入失敗！\n找不到指定的使用者："+input_username))
 	}
 }
 
@@ -108,6 +112,7 @@ func main() {
 	router.GET("/", webServer)
 	router.GET("/login", login_Page)
 	router.GET("/register", register_Page)
+	router.StaticFS("static/", http.Dir("./static_file"))
 
 	router.POST("/login", login_check)
 	router.POST("/register", register_check)

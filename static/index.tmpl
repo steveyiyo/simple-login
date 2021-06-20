@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Comments</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-size: 1rem;
+            line-height: 1;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .flex-1 {
+            flex: 1;
+        }
+        
+        .items-start {
+            align-items: start;
+        }
+        
+        .justify-start {
+            justify-content: flex-start;
+        }
+        
+        .comment-container {
+            border-radius: 8px;
+            border: 1px solid #e2e2e2;
+            margin: 3rem auto;
+            max-width: 600px;
+            min-height: 200px;
+        }
+        
+        .comment-container-title {
+            background: #f8f8f8;
+            border-bottom: 1px solid #ebebeb;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            color: #2d3748;
+            margin-top: 0;
+            padding: 1rem 2rem;
+        }
+        
+        .comment {
+            margin-top: 1rem;
+            padding: 1rem 2rem;
+        }
+        
+        .comment-new {
+            border-top: 1px solid #ebebeb;
+            margin: 1rem 0;
+            padding-top: 2rem;
+        }
+        
+        .comment-avatar {
+            border-radius: 50%;
+            height: 48px;
+            margin-right: 1rem;
+            width: 48px;
+        }
+        
+        .comment-author {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            margin-top: 0;
+        }
+        
+        .comment-body {
+            color: #4a5568;
+            line-height: 1.4;
+            margin: 0;
+            padding-right: 1rem;
+        }
+        
+        .comment-input {
+            border-radius: 8px;
+            border: 1px solid #dddd;
+            box-sizing: border-box;
+            color: #4a5568;
+            font-size: 1rem;
+            line-height: 1.4;
+            padding: 0.8rem;
+            width: 100%;
+        }
+        
+        .comment-input:focus {
+            border-color: #5c6ac4;
+            outline: none;
+        }
+        
+        .comment-submit {
+            background: #5c6ac4;
+            border-radius: 4px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            letter-spacing: 0.05rem;
+            margin-top: 0.5rem;
+            padding: 10px 16px;
+            text-transform: uppercase;
+        }
+        
+        .comment-submit:hover,
+        .comment-submit:focus {
+            filter: brightness(110%);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="comment-container">
+        <h3 class="comment-container-title">留言板</h3>
+        <div class="comments">
+            <div class="comment flex items-start justify-start">
+                <img class="comment-avatar" src="static/favicon.ico" />
+                <div class="flex-1">
+                    <h3 class="comment-author">蹦蹦超神使用者</h3>
+                    <p class="comment-body">哇嗚 你登入成功了！</p>
+                </div>
+            </div>
+        </div>
+        <div class="comment comment-new flex items-start justify-start">
+            <img class="comment-avatar" src="static/favicon.ico" />
+            <div class="flex-1">
+                <h3 class="comment-author">蹦蹦超神使用者</h3>
+                <form action="#" class="comment-form">
+                    <textarea placeholder="今天說些什麼？" class="comment-input"></textarea>
+                    <input type="submit" class="comment-submit" value="新增一些內容...？" />
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const submit = document.querySelector('.comment-submit');
+        const commentList = document.querySelector('.comments');
+        const commentInput = document.querySelector('.comment-input');
+
+        function template(data) {
+            commentList.insertAdjacentHTML("beforeend", `
+  <div class="comment flex items-start justify-start">
+      <img class="comment-avatar" src="${data.avatar}" />
+      <div class="flex-1">
+        <h3 class="comment-author">${data.author}</h3>
+        <p class="comment-body">${data.comment}</p>
+      </div>
+    </div>
+  </div>`);
+        }
+
+        function appendComment(event) {
+
+            const data = {
+                avatar: "static/favicon.ico",
+                comment: commentInput.value,
+                author: "蹦蹦超神使用者"
+            };
+
+            event.preventDefault();
+            // If the value is nothing just return
+            if (commentInput.value.length < 1) return;
+
+            // Insert new template into DOM
+            template(data);
+
+            // Reset textrea value
+            commentInput.value = "";
+
+            // Save the list to localStorage
+            localStorage.setItem('commentListing', commentList.innerHTML);
+        }
+
+        submit.addEventListener('click', appendComment, false)
+
+        // Check for saved wishlist items
+        const saved = localStorage.getItem('commentListing');
+
+        // If there are any saved items, update our list
+        if (saved) {
+            commentList.innerHTML = saved;
+        }
+    </script>
+</body>
+
+</html>
