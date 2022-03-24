@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/steveyiyo/simple-login/internal/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -14,6 +16,13 @@ import (
 type Account struct {
 	Username string
 	Password string
+}
+
+type Result struct {
+	Success  bool
+	Message  string
+	Username string
+	Token    string
 }
 
 // Read User Data
@@ -44,35 +53,67 @@ func SaveData(content Account) bool {
 
 // Login Check
 func Login(c *gin.Context) {
-	var accountdata Account
-	json.Unmarshal(ReadUserData(), &accountdata)
+
+	// Define account_data
+	var account_data Account
+	json.Unmarshal(ReadUserData(), &account_data)
+
+	// Get Login username and password
 	input_username := c.PostForm("username")
 	intput_password := c.PostForm("password")
-	if input_username == accountdata.Username {
-		if CheckPasswordHash(intput_password, accountdata.Password) {
-			c.HTML(200, "index.tmpl", nil)
+
+	// Global variable
+	var return_result Result
+	var token string
+
+	// Check if username and password valid
+	if input_username == account_data.Username {
+		if CheckPasswordHash(intput_password, account_data.Password) {
+			token, _ = jwt.GenerateToken(input_username)
+
+			// return success message
+			return_result = Result{true, "登入成功！", input_username, token}
+			c.JSON(200, return_result)
 		} else {
-			c.Data(400, "text/plain; charset=utf-8;", []byte("登入失敗！\n嘗試的使用者："+input_username))
+			token = ""
+
+			// return success message
+			return_result = Result{true, "登入失敗！", input_username, token}
+			c.JSON(403, return_result)
 		}
 	} else {
-		c.Data(400, "text/plain; charset=utf-8;", []byte("登入失敗！\n找不到指定的使用者："+input_username))
+		token = ""
+
+		// return success message
+		log.Println("User not found.")
+		return_result = Result{true, "登入失敗！", input_username, token}
+		c.JSON(403, return_result)
 	}
 }
 
 // Register Check
 func Register(c *gin.Context) {
-	input_username := c.PostForm("username")
+
+	// Get Register username and hash the password
+	username := c.PostForm("username")
 	HashPWD := HashPassword(c.PostForm("password"))
 
-	user := Account{
-		Username: input_username,
+	// Define account_data
+	account_data := Account{
+		Username: username,
 		Password: HashPWD,
 	}
 
-	if SaveData(user) {
-		c.Data(200, "text/plain; charset=utf-8;", []byte("註冊成功！\n使用者："+input_username))
+	// Global variable
+	var return_result Result
+
+	// Save the User Data, and return the result
+	if SaveData(account_data) {
+		return_result = Result{true, "註冊成功！", username, ""}
+		c.JSON(200, return_result)
 	} else {
-		c.Data(400, "text/plain; charset=utf-8;", []byte("註冊失敗！\n請聯繫管理員"))
+		return_result = Result{true, "註冊失敗！請聯繫管理員", "", ""}
+		c.JSON(400, return_result)
 	}
 }
 

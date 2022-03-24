@@ -7,6 +7,7 @@ import (
 	"github.com/steveyiyo/simple-login/internal/verify"
 )
 
+// Web Page
 func webServer(c *gin.Context) {
 	c.Redirect(302, "login")
 }
