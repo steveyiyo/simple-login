@@ -1,4 +1,4 @@
-package verify
+package webserver
 
 import (
 	"encoding/json"
@@ -52,7 +52,7 @@ func SaveData(content Account) bool {
 }
 
 // Login Check
-func Login(c *gin.Context) {
+func authLogin(c *gin.Context) {
 
 	// Define account_data
 	var account_data Account
@@ -73,6 +73,8 @@ func Login(c *gin.Context) {
 
 			// return success message
 			return_result = Result{true, "登入成功！", input_username, token}
+
+			c.SetCookie("jwt", token, 86400, "/", "", false, true)
 			c.JSON(200, return_result)
 		} else {
 			token = ""
@@ -92,7 +94,7 @@ func Login(c *gin.Context) {
 }
 
 // Register Check
-func Register(c *gin.Context) {
+func authRegister(c *gin.Context) {
 
 	// Get Register username and hash the password
 	username := c.PostForm("username")

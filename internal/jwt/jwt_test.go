@@ -7,7 +7,8 @@ import (
 
 func TestMain(t *testing.T) {
 	token, _ := GenerateToken("steveyi")
-	fmt.Println(token)
-	success, message := ValidateToken(token)
-	fmt.Println(success, message)
+	fmt.Printf("Token: %s\n\n", token)
+
+	_, message := ValidateToken(token)
+	fmt.Printf("Status: %s\n", message)
 }

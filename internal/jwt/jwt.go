@@ -10,26 +10,26 @@ import (
 
 var jwtKey = []byte(tools.RandomString(32))
 
-// Define Account Struct
-type Account struct {
-	Username string
-	Password string
-}
-
 type Token struct {
 	jwt.StandardClaims
-	Username string
+	UUID       string
+	Permission string
 }
 
 // Generate Token
 func GenerateToken(username string) (string, error) {
 	expiresAt := time.Now().Add(24 * time.Hour).Unix()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS512, Token{
+
+	value := Token{
 		StandardClaims: jwt.StandardClaims{
-			Subject:   username,
 			ExpiresAt: expiresAt,
 		},
-	})
+		UUID:       username,
+		Permission: "1",
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS512, value)
+
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
 		return "", err
